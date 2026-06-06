@@ -19,6 +19,8 @@ tags:
     description: Meta archetypes
   - name: analysis
     description: Team analysis and simulation
+  - name: game-data
+    description: Natures, held items, mega stones, and moves
 paths:
   /healthz:
     get:
@@ -107,6 +109,80 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Regulation"
+
+  /natures:
+    get:
+      operationId: listNatures
+      tags: [game-data]
+      summary: List all 25 natures with stat modifiers
+      responses:
+        "200":
+          description: All natures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NatureEntry"
+
+  /items:
+    get:
+      operationId: listItems
+      tags: [game-data]
+      summary: List held items and mega stones
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [held-item, berry, type-boost, mega-stone]
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Items matching the filter
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItemEntry"
+
+  /moves:
+    get:
+      operationId: listMoves
+      tags: [game-data]
+      summary: Search moves by name or type
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [physical, special, status]
+      responses:
+        "200":
+          description: Matching moves
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MoveEntry"
 
   /archetypes:
     get:
@@ -323,6 +399,69 @@ components:
           type: integer
         speed:
           type: integer
+
+    NatureEntry:
+      type: object
+      required: [id, name, displayName]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        displayName:
+          type: string
+        increasedStat:
+          type: ["string", "null"]
+        decreasedStat:
+          type: ["string", "null"]
+
+    ItemEntry:
+      type: object
+      required: [id, name, displayName, category]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        displayName:
+          type: string
+        category:
+          type: string
+        description:
+          type: ["string", "null"]
+        effect:
+          type: ["string", "null"]
+        spriteUrl:
+          type: ["string", "null"]
+        megaFor:
+          type: ["string", "null"]
+
+    MoveEntry:
+      type: object
+      required: [id, name, displayName, type, category]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        category:
+          type: string
+        power:
+          type: ["integer", "null"]
+        accuracy:
+          type: ["integer", "null"]
+        pp:
+          type: ["integer", "null"]
+        priority:
+          type: ["integer", "null"]
+        target:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
 
     Regulation:
       type: object

@@ -97,6 +97,65 @@ export const GetCurrentRegulationResponse = zod.object({
 
 
 /**
+ * @summary List all 25 natures with stat modifiers
+ */
+export const ListNaturesResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "displayName": zod.string(),
+  "increasedStat": zod.string().nullish(),
+  "decreasedStat": zod.string().nullish()
+})
+export const ListNaturesResponse = zod.array(ListNaturesResponseItem)
+
+
+/**
+ * @summary List held items and mega stones
+ */
+export const ListItemsQueryParams = zod.object({
+  "category": zod.enum(['held-item', 'berry', 'type-boost', 'mega-stone']).optional(),
+  "q": zod.coerce.string().optional()
+})
+
+export const ListItemsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "displayName": zod.string(),
+  "category": zod.string(),
+  "description": zod.string().nullish(),
+  "effect": zod.string().nullish(),
+  "spriteUrl": zod.string().nullish(),
+  "megaFor": zod.string().nullish()
+})
+export const ListItemsResponse = zod.array(ListItemsResponseItem)
+
+
+/**
+ * @summary Search moves by name or type
+ */
+export const ListMovesQueryParams = zod.object({
+  "q": zod.coerce.string().optional(),
+  "type": zod.coerce.string().optional(),
+  "category": zod.enum(['physical', 'special', 'status']).optional()
+})
+
+export const ListMovesResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "displayName": zod.string(),
+  "type": zod.string(),
+  "category": zod.string(),
+  "power": zod.number().nullish(),
+  "accuracy": zod.number().nullish(),
+  "pp": zod.number().nullish(),
+  "priority": zod.number().nullish(),
+  "target": zod.string().nullish(),
+  "description": zod.string().nullish()
+})
+export const ListMovesResponse = zod.array(ListMovesResponseItem)
+
+
+/**
  * @summary List all meta archetypes
  */
 export const ListArchetypesResponseItem = zod.object({

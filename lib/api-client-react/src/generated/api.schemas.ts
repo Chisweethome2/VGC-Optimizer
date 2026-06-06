@@ -38,6 +38,51 @@ export interface PokemonDetail {
   weightKg?: number;
 }
 
+export interface NatureEntry {
+  id: number;
+  name: string;
+  displayName: string;
+  /** @nullable */
+  increasedStat?: string | null;
+  /** @nullable */
+  decreasedStat?: string | null;
+}
+
+export interface ItemEntry {
+  id: number;
+  name: string;
+  displayName: string;
+  category: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  effect?: string | null;
+  /** @nullable */
+  spriteUrl?: string | null;
+  /** @nullable */
+  megaFor?: string | null;
+}
+
+export interface MoveEntry {
+  id: number;
+  name: string;
+  displayName: string;
+  type: string;
+  category: string;
+  /** @nullable */
+  power?: number | null;
+  /** @nullable */
+  accuracy?: number | null;
+  /** @nullable */
+  pp?: number | null;
+  /** @nullable */
+  priority?: number | null;
+  /** @nullable */
+  target?: string | null;
+  /** @nullable */
+  description?: string | null;
+}
+
 export interface Regulation {
   id: string;
   name: string;
@@ -152,4 +197,34 @@ export type SearchPokemonParams = {
 q: string;
 regulation?: string;
 };
+
+export type ListItemsParams = {
+category?: ListItemsCategory;
+q?: string;
+};
+
+export type ListItemsCategory = typeof ListItemsCategory[keyof typeof ListItemsCategory];
+
+
+export const ListItemsCategory = {
+  'held-item': 'held-item',
+  berry: 'berry',
+  'type-boost': 'type-boost',
+  'mega-stone': 'mega-stone',
+} as const;
+
+export type ListMovesParams = {
+q?: string;
+type?: string;
+category?: ListMovesCategory;
+};
+
+export type ListMovesCategory = typeof ListMovesCategory[keyof typeof ListMovesCategory];
+
+
+export const ListMovesCategory = {
+  physical: 'physical',
+  special: 'special',
+  status: 'status',
+} as const;
 

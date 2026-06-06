@@ -22,7 +22,12 @@ import type {
 import type {
   Archetype,
   HealthStatus,
+  ItemEntry,
+  ListItemsParams,
+  ListMovesParams,
   MatchupResult,
+  MoveEntry,
+  NatureEntry,
   PokemonDetail,
   PokemonSummary,
   Regulation,
@@ -424,6 +429,251 @@ export function useGetCurrentRegulation<TData = Awaited<ReturnType<typeof getCur
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetCurrentRegulationQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListNaturesUrl = () => {
+
+
+
+
+  return `/api/natures`
+}
+
+/**
+ * @summary List all 25 natures with stat modifiers
+ */
+export const listNatures = async ( options?: RequestInit): Promise<NatureEntry[]> => {
+
+  return customFetch<NatureEntry[]>(getListNaturesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListNaturesQueryKey = () => {
+    return [
+    `/api/natures`
+    ] as const;
+    }
+
+
+export const getListNaturesQueryOptions = <TData = Awaited<ReturnType<typeof listNatures>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNatures>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListNaturesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listNatures>>> = ({ signal }) => listNatures({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listNatures>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListNaturesQueryResult = NonNullable<Awaited<ReturnType<typeof listNatures>>>
+export type ListNaturesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all 25 natures with stat modifiers
+ */
+
+export function useListNatures<TData = Awaited<ReturnType<typeof listNatures>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listNatures>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListNaturesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListItemsUrl = (params?: ListItemsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/items?${stringifiedParams}` : `/api/items`
+}
+
+/**
+ * @summary List held items and mega stones
+ */
+export const listItems = async (params?: ListItemsParams, options?: RequestInit): Promise<ItemEntry[]> => {
+
+  return customFetch<ItemEntry[]>(getListItemsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListItemsQueryKey = (params?: ListItemsParams,) => {
+    return [
+    `/api/items`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListItemsQueryOptions = <TData = Awaited<ReturnType<typeof listItems>>, TError = ErrorType<unknown>>(params?: ListItemsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listItems>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListItemsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listItems>>> = ({ signal }) => listItems(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listItems>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListItemsQueryResult = NonNullable<Awaited<ReturnType<typeof listItems>>>
+export type ListItemsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List held items and mega stones
+ */
+
+export function useListItems<TData = Awaited<ReturnType<typeof listItems>>, TError = ErrorType<unknown>>(
+ params?: ListItemsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listItems>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListItemsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListMovesUrl = (params?: ListMovesParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/moves?${stringifiedParams}` : `/api/moves`
+}
+
+/**
+ * @summary Search moves by name or type
+ */
+export const listMoves = async (params?: ListMovesParams, options?: RequestInit): Promise<MoveEntry[]> => {
+
+  return customFetch<MoveEntry[]>(getListMovesUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListMovesQueryKey = (params?: ListMovesParams,) => {
+    return [
+    `/api/moves`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListMovesQueryOptions = <TData = Awaited<ReturnType<typeof listMoves>>, TError = ErrorType<unknown>>(params?: ListMovesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMoves>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMovesQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMoves>>> = ({ signal }) => listMoves(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMoves>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMovesQueryResult = NonNullable<Awaited<ReturnType<typeof listMoves>>>
+export type ListMovesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Search moves by name or type
+ */
+
+export function useListMoves<TData = Awaited<ReturnType<typeof listMoves>>, TError = ErrorType<unknown>>(
+ params?: ListMovesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMoves>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMovesQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

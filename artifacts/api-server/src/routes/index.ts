@@ -5,6 +5,7 @@ import regulationsRouter from "./regulations";
 import archetypesRouter from "./archetypes";
 import teamsRouter from "./teams";
 import analysisRouter from "./analysis";
+import gameDataRouter from "./game-data";
 
 const router: IRouter = Router();
 
@@ -14,5 +15,6 @@ router.use(regulationsRouter);
 router.use(archetypesRouter);
 router.use(teamsRouter);
 router.use(analysisRouter);
+router.use(gameDataRouter);
 
 export default router;
