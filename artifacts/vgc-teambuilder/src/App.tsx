@@ -11,6 +11,7 @@ import Builder from "@/pages/builder";
 import Analyze from "@/pages/analyze";
 import Simulate from "@/pages/simulate";
 import Archetypes from "@/pages/archetypes";
+import Meta from "@/pages/meta";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/analyze" component={Analyze} />
         <Route path="/simulate" component={Simulate} />
         <Route path="/archetypes" component={Archetypes} />
+        <Route path="/meta" component={Meta} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

@@ -6,6 +6,7 @@
   "scripts": {
     "hello": "tsx ./src/hello.ts",
     "seed-game-data": "tsx ./src/seed-game-data.ts",
+    "seed-indy-regionals": "tsx ./src/seed-indy-regionals.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

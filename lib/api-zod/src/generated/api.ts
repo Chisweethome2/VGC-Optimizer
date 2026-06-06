@@ -444,3 +444,68 @@ export const SimulateTeamResponseItem = zod.object({
 export const SimulateTeamResponse = zod.array(SimulateTeamResponseItem)
 
 
+/**
+ * @summary List all tournament events
+ */
+export const ListTournamentEventsResponseItem = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "location": zod.string().nullish(),
+  "regulation": zod.string(),
+  "date": zod.string().nullish(),
+  "usageStats": zod.array(zod.object({
+  "rank": zod.number(),
+  "pokemon": zod.string(),
+  "pokemonDisplay": zod.string(),
+  "phase1Pct": zod.number(),
+  "phase2Pct": zod.number().nullish()
+})).nullish()
+})
+export const ListTournamentEventsResponse = zod.array(ListTournamentEventsResponseItem)
+
+
+/**
+ * @summary Get a single tournament event with usage stats
+ */
+export const GetTournamentEventParams = zod.object({
+  "slug": zod.coerce.string()
+})
+
+export const GetTournamentEventResponse = zod.object({
+  "id": zod.number(),
+  "slug": zod.string(),
+  "name": zod.string(),
+  "location": zod.string().nullish(),
+  "regulation": zod.string(),
+  "date": zod.string().nullish(),
+  "usageStats": zod.array(zod.object({
+  "rank": zod.number(),
+  "pokemon": zod.string(),
+  "pokemonDisplay": zod.string(),
+  "phase1Pct": zod.number(),
+  "phase2Pct": zod.number().nullish()
+})).nullish()
+})
+
+
+/**
+ * @summary List tournament teams, optionally filtered by event
+ */
+export const ListTournamentTeamsQueryParams = zod.object({
+  "event": zod.coerce.string().optional().describe('Filter by event slug (e.g. indy-regionals-2026)')
+})
+
+export const ListTournamentTeamsResponseItem = zod.object({
+  "id": zod.number(),
+  "eventSlug": zod.string(),
+  "playerName": zod.string(),
+  "placement": zod.string(),
+  "placementOrder": zod.number(),
+  "pokemon": zod.array(zod.string()),
+  "pokemonDisplay": zod.array(zod.string()).nullish(),
+  "rentalCode": zod.string().nullish()
+})
+export const ListTournamentTeamsResponse = zod.array(ListTournamentTeamsResponseItem)
+
+

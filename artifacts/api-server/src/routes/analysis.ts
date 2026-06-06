@@ -77,23 +77,29 @@ const BASE_SPEEDS: Record<string, number> = {
   "iron-boulder": 124, "gouging-fire": 95, "raging-bolt": 75,
   "ogerpon": 110, "ogerpon-wellspring": 110, "ogerpon-hearthflame": 110, "ogerpon-cornerstone": 110,
   "terapagos": 60,
-  // Reg M-A eligible
+  // Reg M-A eligible (no duplicates from above)
   "meowscarada": 123, "skeledirge": 51, "quaquaval": 85, "garganacl": 68,
   "armarouge": 60, "ceruledge": 88, "bellibolt": 44, "scovillain": 75,
-  "espathra": 105, "tinkaton": 42, "palafin": 100, "orthworm": 27,
-  "glimmora": 86, "farigiraf": 60, "kingambit": 50, "sinistcha": 40,
+  "espathra": 105, "tinkaton": 42, "orthworm": 27,
+  "glimmora": 86, "farigiraf": 60, "sinistcha": 40,
   "archaludon": 85, "hydrapple": 44, "sneasler": 120, "kleavor": 85,
   "basculegion": 86, "wyrdeer": 65, "weavile": 125, "lucario": 90,
   "kommo-o": 85, "mimikyu": 96, "toxapex": 35, "araquanid": 42,
   "salazzle": 117, "tsareena": 72, "passimian": 80, "oranguru": 60,
-  "lycanroc": 112, "primarina": 60, "incineroar": 60, "decidueye": 70,
+  "lycanroc": 112, "primarina": 60, "decidueye": 70,
   "greninja": 122, "delphox": 104, "chesnaught": 64, "volcarona": 100,
   "hydreigon": 98, "chandelure": 80, "reuniclus": 30, "zoroark": 105,
-  "krookodile": 92, "excadrill": 88, "conkeldurr": 45, "serperior": 113,
+  "krookodile": 92, "conkeldurr": 45, "serperior": 113,
   "politoed": 70, "ampharos": 55, "scizor": 65, "heracross": 85,
   "houndoom": 95, "steelix": 30, "gardevoir": 80, "medicham": 60,
   "manectric": 105, "altaria": 80, "absol": 75, "lopunny": 105,
-  "gallade": 80, "froslass": 110, "rotom": 91, "togekiss": 80,
+  "gallade": 80, "froslass": 110, "rotom": 91,
+  // floette (eternal) / mega floette
+  "floette": 52,
+  // aerodactyl mega / gyarados mega
+  "aerodactyl": 130, "gyarados": 81,
+  // corviknight, sneasler, basculegion already added
+  "corviknight": 60, "talonflame": 126, "aegislash": 60, "maushold": 50,
 };
 
 function getBaseSpeed(name: string): number {

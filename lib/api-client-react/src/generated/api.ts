@@ -25,6 +25,7 @@ import type {
   ItemEntry,
   ListItemsParams,
   ListMovesParams,
+  ListTournamentTeamsParams,
   MatchupResult,
   MoveEntry,
   NatureEntry,
@@ -34,7 +35,9 @@ import type {
   SearchPokemonParams,
   Team,
   TeamAnalysis,
-  TeamInput
+  TeamInput,
+  TournamentEvent,
+  TournamentTeam
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -1269,4 +1272,242 @@ export const useSimulateTeam = <TError = ErrorType<unknown>,
       > => {
       return useMutation(getSimulateTeamMutationOptions(options));
     }
+
+export const getListTournamentEventsUrl = () => {
+
+
+
+
+  return `/api/tournament-events`
+}
+
+/**
+ * @summary List all tournament events
+ */
+export const listTournamentEvents = async ( options?: RequestInit): Promise<TournamentEvent[]> => {
+
+  return customFetch<TournamentEvent[]>(getListTournamentEventsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTournamentEventsQueryKey = () => {
+    return [
+    `/api/tournament-events`
+    ] as const;
+    }
+
+
+export const getListTournamentEventsQueryOptions = <TData = Awaited<ReturnType<typeof listTournamentEvents>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTournamentEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTournamentEventsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTournamentEvents>>> = ({ signal }) => listTournamentEvents({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTournamentEvents>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListTournamentEventsQueryResult = NonNullable<Awaited<ReturnType<typeof listTournamentEvents>>>
+export type ListTournamentEventsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all tournament events
+ */
+
+export function useListTournamentEvents<TData = Awaited<ReturnType<typeof listTournamentEvents>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTournamentEvents>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListTournamentEventsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetTournamentEventUrl = (slug: string,) => {
+
+
+
+
+  return `/api/tournament-events/${slug}`
+}
+
+/**
+ * @summary Get a single tournament event with usage stats
+ */
+export const getTournamentEvent = async (slug: string, options?: RequestInit): Promise<TournamentEvent> => {
+
+  return customFetch<TournamentEvent>(getGetTournamentEventUrl(slug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTournamentEventQueryKey = (slug: string,) => {
+    return [
+    `/api/tournament-events/${slug}`
+    ] as const;
+    }
+
+
+export const getGetTournamentEventQueryOptions = <TData = Awaited<ReturnType<typeof getTournamentEvent>>, TError = ErrorType<unknown>>(slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournamentEvent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTournamentEventQueryKey(slug);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTournamentEvent>>> = ({ signal }) => getTournamentEvent(slug, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTournamentEvent>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTournamentEventQueryResult = NonNullable<Awaited<ReturnType<typeof getTournamentEvent>>>
+export type GetTournamentEventQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get a single tournament event with usage stats
+ */
+
+export function useGetTournamentEvent<TData = Awaited<ReturnType<typeof getTournamentEvent>>, TError = ErrorType<unknown>>(
+ slug: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournamentEvent>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTournamentEventQueryOptions(slug,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getListTournamentTeamsUrl = (params?: ListTournamentTeamsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tournament-teams?${stringifiedParams}` : `/api/tournament-teams`
+}
+
+/**
+ * @summary List tournament teams, optionally filtered by event
+ */
+export const listTournamentTeams = async (params?: ListTournamentTeamsParams, options?: RequestInit): Promise<TournamentTeam[]> => {
+
+  return customFetch<TournamentTeam[]>(getListTournamentTeamsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTournamentTeamsQueryKey = (params?: ListTournamentTeamsParams,) => {
+    return [
+    `/api/tournament-teams`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListTournamentTeamsQueryOptions = <TData = Awaited<ReturnType<typeof listTournamentTeams>>, TError = ErrorType<unknown>>(params?: ListTournamentTeamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTournamentTeams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTournamentTeamsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTournamentTeams>>> = ({ signal }) => listTournamentTeams(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTournamentTeams>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListTournamentTeamsQueryResult = NonNullable<Awaited<ReturnType<typeof listTournamentTeams>>>
+export type ListTournamentTeamsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List tournament teams, optionally filtered by event
+ */
+
+export function useListTournamentTeams<TData = Awaited<ReturnType<typeof listTournamentTeams>>, TError = ErrorType<unknown>>(
+ params?: ListTournamentTeamsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTournamentTeams>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListTournamentTeamsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 

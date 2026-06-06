@@ -21,6 +21,8 @@ tags:
     description: Team analysis and simulation
   - name: game-data
     description: Natures, held items, mega stones, and moves
+  - name: tournament
+    description: Tournament results and usage statistics
 paths:
   /healthz:
     get:
@@ -327,6 +329,62 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MatchupResult"
+
+  /tournament-events:
+    get:
+      operationId: listTournamentEvents
+      tags: [tournament]
+      summary: List all tournament events
+      responses:
+        "200":
+          description: List of tournament events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TournamentEvent"
+
+  /tournament-events/{slug}:
+    get:
+      operationId: getTournamentEvent
+      tags: [tournament]
+      summary: Get a single tournament event with usage stats
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tournament event details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TournamentEvent"
+
+  /tournament-teams:
+    get:
+      operationId: listTournamentTeams
+      tags: [tournament]
+      summary: List tournament teams, optionally filtered by event
+      parameters:
+        - name: event
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by event slug (e.g. indy-regionals-2026)
+      responses:
+        "200":
+          description: List of tournament teams ordered by placement
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TournamentTeam"
 
 components:
   schemas:
@@ -699,3 +757,64 @@ components:
           type: array
           items:
             type: string
+
+    UsageStat:
+      type: object
+      required: [rank, pokemon, pokemonDisplay, phase1Pct]
+      properties:
+        rank:
+          type: integer
+        pokemon:
+          type: string
+        pokemonDisplay:
+          type: string
+        phase1Pct:
+          type: number
+        phase2Pct:
+          type: ["number", "null"]
+
+    TournamentEvent:
+      type: object
+      required: [id, slug, name, regulation]
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        location:
+          type: ["string", "null"]
+        regulation:
+          type: string
+        date:
+          type: ["string", "null"]
+        usageStats:
+          type: ["array", "null"]
+          items:
+            $ref: '#/components/schemas/UsageStat'
+
+    TournamentTeam:
+      type: object
+      required: [id, eventSlug, playerName, placement, placementOrder, pokemon]
+      properties:
+        id:
+          type: integer
+        eventSlug:
+          type: string
+        playerName:
+          type: string
+        placement:
+          type: string
+        placementOrder:
+          type: integer
+        pokemon:
+          type: array
+          items:
+            type: string
+        pokemonDisplay:
+          type: ["array", "null"]
+          items:
+            type: string
+        rentalCode:
+          type: ["string", "null"]

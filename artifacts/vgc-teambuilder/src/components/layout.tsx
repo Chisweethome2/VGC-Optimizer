@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
-import { Shield, Home, Target, Activity, BookOpen, Menu } from "lucide-react";
+import { Shield, Home, Target, Activity, BookOpen, TrendingUp } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +19,7 @@ const NAV_ITEMS = [
   { icon: Target, label: "Matchup Simulator", href: "/simulate" },
   { icon: Activity, label: "Team Analysis", href: "/analyze" },
   { icon: BookOpen, label: "Archetypes", href: "/archetypes" },
+  { icon: TrendingUp, label: "Meta Intel", href: "/meta" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {

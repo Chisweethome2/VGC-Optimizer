@@ -193,6 +193,41 @@ export interface MatchupResult {
   winConditions: string[];
 }
 
+export interface UsageStat {
+  rank: number;
+  pokemon: string;
+  pokemonDisplay: string;
+  phase1Pct: number;
+  /** @nullable */
+  phase2Pct?: number | null;
+}
+
+export interface TournamentEvent {
+  id: number;
+  slug: string;
+  name: string;
+  /** @nullable */
+  location?: string | null;
+  regulation: string;
+  /** @nullable */
+  date?: string | null;
+  /** @nullable */
+  usageStats?: UsageStat[] | null;
+}
+
+export interface TournamentTeam {
+  id: number;
+  eventSlug: string;
+  playerName: string;
+  placement: string;
+  placementOrder: number;
+  pokemon: string[];
+  /** @nullable */
+  pokemonDisplay?: string[] | null;
+  /** @nullable */
+  rentalCode?: string | null;
+}
+
 export type SearchPokemonParams = {
 q: string;
 regulation?: string;
@@ -227,4 +262,11 @@ export const ListMovesCategory = {
   special: 'special',
   status: 'status',
 } as const;
+
+export type ListTournamentTeamsParams = {
+/**
+ * Filter by event slug (e.g. indy-regionals-2026)
+ */
+event?: string;
+};
 
