@@ -1,0 +1,626 @@
+
+Welcome to Bulbapedia, the free Pokémon encyclopedia that anyone can edit!
+Create your account to get started with editing pages!
+Please remember to follow the unreleased materials policy, manual of style, and code of conduct at all times.
+Check the Bulbagarden home page for up-to-date Pokémon news, and discuss it on the forums or in the Bulbagarden Discord server.
+Article
+Discussion
+View source
+View history
+
+More
+Regulation Set M-A
+
+2 Languages
+Regulation Set M-A
+
+Game	Pokémon Champions
+Ranked Seasons	Season M-1
+Season M-2
+Official Online Competitions	Warm-Up Challenge
+Global Challenge 2026 I
+PJCS 2026 Qualifiers
+Monthly Challenge Series May 2026
+First run
+Start time	April 8, 2026 at 02:00 (UTC)
+End time	June 17, 2026 at 01:59 (UTC)
+Set Duration	69 days
+Regulation Set M-A was the first set of organized play rules in Pokémon Champions. It was used for the first time from April 8, 2026 until June 17, 2026.
+
+
+Contents
+Ruleset
+
+The season adopts the following ruleset:
+
+Eligibility is limited to the Pokémon listed below
+Pokémon may hold held items, however duplicate held items are not allowed.
+Mega Evolution is enabled for select Pokémon (see list below), however a player may only Mega Evolve once per battle.
+Timers are set as follows:
+Total time limit per game: 20 minutes
+Player timer per game: 7 minutes
+Turn time: 45 seconds
+Preview time: 90 seconds
+Eligible Pokémon
+
+Venusaur
+Venusaur
+Charizard
+Charizard
+Blastoise
+Blastoise
+Beedrill
+Beedrill
+Pidgeot
+Pidgeot
+Arbok
+Arbok
+Pikachu
+Pikachu
+Raichu
+Raichu
+Raichu
+Raichu
+(Alolan Form)
+Clefable
+Clefable
+Ninetales
+Ninetales
+Ninetales
+Ninetales
+(Alolan Form)
+Arcanine
+Arcanine
+Arcanine
+Arcanine
+(Hisuian Form)
+Alakazam
+Alakazam
+Machamp
+Machamp
+Victreebel
+Victreebel
+Slowbro
+Slowbro
+Slowbro
+Slowbro
+(Galarian Form)
+Gengar
+Gengar
+Kangaskhan
+Kangaskhan
+Starmie
+Starmie
+Pinsir
+Pinsir
+Tauros
+Tauros
+Tauros
+Tauros
+(Paldean Form
+(Combat Breed))
+Tauros
+Tauros
+(Paldean Form
+(Blaze Breed))
+Tauros
+Tauros
+(Paldean Form
+(Aqua Breed))
+Gyarados
+Gyarados
+Ditto
+Ditto
+Vaporeon
+Vaporeon
+Jolteon
+Jolteon
+Flareon
+Flareon
+Aerodactyl
+Aerodactyl
+Snorlax
+Snorlax
+Dragonite
+Dragonite
+Meganium
+Meganium
+Typhlosion
+Typhlosion
+Typhlosion
+Typhlosion
+(Hisuian Form)
+Feraligatr
+Feraligatr
+Ariados
+Ariados
+Ampharos
+Ampharos
+Azumarill
+Azumarill
+Politoed
+Politoed
+Espeon
+Espeon
+Umbreon
+Umbreon
+Slowking
+Slowking
+Slowking
+Slowking
+(Galarian Form)
+Forretress
+Forretress
+Steelix
+Steelix
+Scizor
+Scizor
+Heracross
+Heracross
+Skarmory
+Skarmory
+Houndoom
+Houndoom
+Tyranitar
+Tyranitar
+Pelipper
+Pelipper
+Gardevoir
+Gardevoir
+Sableye
+Sableye
+Aggron
+Aggron
+Medicham
+Medicham
+Manectric
+Manectric
+Sharpedo
+Sharpedo
+Camerupt
+Camerupt
+Torkoal
+Torkoal
+Altaria
+Altaria
+Milotic
+Milotic
+Castform
+Castform
+Banette
+Banette
+Chimecho
+Chimecho
+Absol
+Absol
+Glalie
+Glalie
+Torterra
+Torterra
+Infernape
+Infernape
+Empoleon
+Empoleon
+Luxray
+Luxray
+Roserade
+Roserade
+Rampardos
+Rampardos
+Bastiodon
+Bastiodon
+Lopunny
+Lopunny
+Spiritomb
+Spiritomb
+Garchomp
+Garchomp
+Lucario
+Lucario
+Hippowdon
+Hippowdon
+Toxicroak
+Toxicroak
+Abomasnow
+Abomasnow
+Weavile
+Weavile
+Rhyperior
+Rhyperior
+Leafeon
+Leafeon
+Glaceon
+Glaceon
+Gliscor
+Gliscor
+Mamoswine
+Mamoswine
+Gallade
+Gallade
+Froslass
+Froslass
+Rotom
+Rotom
+Rotom
+Rotom
+(Heat Rotom)
+Rotom
+Rotom
+(Wash Rotom)
+Rotom
+Rotom
+(Frost Rotom)
+Rotom
+Rotom
+(Fan Rotom)
+Rotom
+Rotom
+(Mow Rotom)
+Serperior
+Serperior
+Emboar
+Emboar
+Samurott
+Samurott
+Samurott
+Samurott
+(Hisuian Form)
+Watchog
+Watchog
+Liepard
+Liepard
+Simisage
+Simisage
+Simisear
+Simisear
+Simipour
+Simipour
+Excadrill
+Excadrill
+Audino
+Audino
+Conkeldurr
+Conkeldurr
+Whimsicott
+Whimsicott
+Krookodile
+Krookodile
+Cofagrigus
+Cofagrigus
+Garbodor
+Garbodor
+Zoroark
+Zoroark
+Zoroark
+Zoroark
+(Hisuian Form)
+Reuniclus
+Reuniclus
+Vanilluxe
+Vanilluxe
+Emolga
+Emolga
+Chandelure
+Chandelure
+Beartic
+Beartic
+Stunfisk
+Stunfisk
+Stunfisk
+Stunfisk
+(Galarian Form)
+Golurk
+Golurk
+Hydreigon
+Hydreigon
+Volcarona
+Volcarona
+Chesnaught
+Chesnaught
+Delphox
+Delphox
+Greninja
+Greninja
+Diggersby
+Diggersby
+Talonflame
+Talonflame
+Vivillon
+Vivillon
+Floette
+Floette
+Florges
+Florges
+Pangoro
+Pangoro
+Furfrou
+Furfrou
+Meowstic
+Meowstic
+(Male)
+Meowstic
+Meowstic
+(Female)
+Aegislash
+Aegislash
+Aromatisse
+Aromatisse
+Slurpuff
+Slurpuff
+Clawitzer
+Clawitzer
+Heliolisk
+Heliolisk
+Tyrantrum
+Tyrantrum
+Aurorus
+Aurorus
+Sylveon
+Sylveon
+Hawlucha
+Hawlucha
+Dedenne
+Dedenne
+Goodra
+Goodra
+Goodra
+Goodra
+(Hisuian Form)
+Klefki
+Klefki
+Trevenant
+Trevenant
+Gourgeist
+Gourgeist
+(Medium Variety)
+Gourgeist
+Gourgeist
+(Small Variety)
+Gourgeist
+Gourgeist
+(Large Variety)
+Gourgeist
+Gourgeist
+(Jumbo Variety)
+Avalugg
+Avalugg
+Avalugg
+Avalugg
+(Hisuian Form)
+Noivern
+Noivern
+Decidueye
+Decidueye
+Decidueye
+Decidueye
+(Hisuian Form)
+Incineroar
+Incineroar
+Primarina
+Primarina
+Toucannon
+Toucannon
+Crabominable
+Crabominable
+Lycanroc
+Lycanroc
+(Midday Form)
+Lycanroc
+Lycanroc
+(Midnight Form)
+Lycanroc
+Lycanroc
+(Dusk Form)
+Toxapex
+Toxapex
+Mudsdale
+Mudsdale
+Araquanid
+Araquanid
+Salazzle
+Salazzle
+Tsareena
+Tsareena
+Oranguru
+Oranguru
+Passimian
+Passimian
+Mimikyu
+Mimikyu
+Drampa
+Drampa
+Kommo-o
+Kommo-o
+Corviknight
+Corviknight
+Flapple
+Flapple
+Appletun
+Appletun
+Sandaconda
+Sandaconda
+Polteageist
+Polteageist
+Hatterene
+Hatterene
+Mr. Rime
+Mr. Rime
+Runerigus
+Runerigus
+Alcremie
+Alcremie
+Morpeko
+Morpeko
+Dragapult
+Dragapult
+Wyrdeer
+Wyrdeer
+Kleavor
+Kleavor
+Basculegion
+Basculegion
+(Male)
+Basculegion
+Basculegion
+(Female)
+Sneasler
+Sneasler
+Meowscarada
+Meowscarada
+Skeledirge
+Skeledirge
+Quaquaval
+Quaquaval
+Maushold
+Maushold
+Garganacl
+Garganacl
+Armarouge
+Armarouge
+Ceruledge
+Ceruledge
+Bellibolt
+Bellibolt
+Scovillain
+Scovillain
+Espathra
+Espathra
+Tinkaton
+Tinkaton
+Palafin
+Palafin
+Orthworm
+Orthworm
+Glimmora
+Glimmora
+Farigiraf
+Farigiraf
+Kingambit
+Kingambit
+Sinistcha
+Sinistcha
+Archaludon
+Archaludon
+Hydrapple
+Hydrapple
+Mega Evolutions
+The following Mega Evolutions are legal in the ruleset:
+
+Venusaur
+Mega Venusaur
+Charizard
+Mega Charizard X
+Charizard
+Mega Charizard Y
+Blastoise
+Mega Blastoise
+Beedrill
+Mega Beedrill
+Pidgeot
+Mega Pidgeot
+Clefable
+Mega Clefable
+Alakazam
+Mega Alakazam
+Victreebel
+Mega Victreebel
+Slowbro
+Mega Slowbro
+Gengar
+Mega Gengar
+Kangaskhan
+Mega Kangaskhan
+Starmie
+Mega Starmie
+Pinsir
+Mega Pinsir
+Gyarados
+Mega Gyarados
+Aerodactyl
+Mega Aerodactyl
+Dragonite
+Mega Dragonite
+Meganium
+Mega Meganium
+Feraligatr
+Mega Feraligatr
+Ampharos
+Mega Ampharos
+Steelix
+Mega Steelix
+Scizor
+Mega Scizor
+Heracross
+Mega Heracross
+Skarmory
+Mega Skarmory
+Houndoom
+Mega Houndoom
+Tyranitar
+Mega Tyranitar
+Gardevoir
+Mega Gardevoir
+Sableye
+Mega Sableye
+Aggron
+Mega Aggron
+Medicham
+Mega Medicham
+Manectric
+Mega Manectric
+Sharpedo
+Mega Sharpedo
+Camerupt
+Mega Camerupt
+Altaria
+Mega Altaria
+Banette
+Mega Banette
+Chimecho
+Mega Chimecho
+Absol
+Mega Absol
+Glalie
+Mega Glalie
+Lopunny
+Mega Lopunny
+Garchomp
+Mega Garchomp
+Lucario
+Mega Lucario
+Abomasnow
+Mega Abomasnow
+Gallade
+Mega Gallade
+Froslass
+Mega Froslass
+Emboar
+Mega Emboar
+Excadrill
+Mega Excadrill
+Audino
+Mega Audino
+Chandelure
+Mega Chandelure
+Golurk
+Mega Golurk
+Chesnaught
+Mega Chesnaught
+Delphox
+Mega Delphox
+Greninja
+Mega Greninja
+Floette
+Mega Floette
+Meowstic
+Mega Meowstic
+Hawlucha
+Mega Hawlucha
+Crabominable
+Mega Crabominable
+Drampa
+Mega Drampa
+Scovillain
+Mega Scovillain
+Glimmora
+Mega Glimmora

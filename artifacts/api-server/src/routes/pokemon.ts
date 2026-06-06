@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { eligibleByRegulation, REGULATION_MA_ELIGIBLE } from "./regulations";
 
 const router = Router();
 
@@ -56,52 +57,6 @@ function buildBaseStats(stats: PokeAPIPokemon["stats"]) {
   return result;
 }
 
-// Minimal list of common VGC Pokemon names for search
-const vgcPokemonList: string[] = [
-  "miraidon", "koraidon", "flutter-mane", "iron-hands", "chien-pao", "chi-yu", "ting-lu", "wo-chien",
-  "roaring-moon", "iron-valiant", "iron-moth", "iron-boulder", "gouging-fire", "raging-bolt",
-  "urshifu-single-strike", "urshifu-rapid-strike", "calyrex-shadow", "calyrex-ice", "zacian",
-  "zamazenta", "kyogre", "groudon", "rayquaza", "dialga", "palkia", "giratina", "xerneas", "yveltal",
-  "incineroar", "amoonguss", "torkoal", "pelipper", "politoed", "tyranitar", "excadrill",
-  "landorus-therian", "garchomp", "hatterene", "indeedee", "porygon2", "grimmsnarl",
-  "rillaboom", "cinderace", "dragapult", "togekiss", "clefairy", "murkrow", "talonflame",
-  "arcanine", "scream-tail", "sandy-shocks", "iron-treads", "baxcalibur", "cetitan",
-  "ninetales-alola", "venusaur", "charizard", "blastoise", "mewtwo", "lugia", "ho-oh",
-  "regieleki", "regidrago", "regice", "regirock", "registeel", "regigigas",
-  "kommo-o", "armarouge", "ceruledge", "iron-jugulis", "iron-bundle", "palafin",
-  "annihilape", "clodsire", "gholdengo", "kingambit", "great-tusk", "scream-tail",
-  "brute-bonnet", "flutter-mane", "slither-wing", "sandy-shocks", "iron-treads",
-  "iron-moth", "iron-hands", "iron-jugulis", "iron-thorns", "iron-valiant",
-  "wo-chien", "chien-pao", "ting-lu", "chi-yu",
-  "walking-wake", "iron-leaves", "dipplin", "poltchageist", "sinistcha",
-  "okidogi", "munkidori", "fezandipiti", "ogerpon", "ogerpon-wellspring", "ogerpon-hearthflame", "ogerpon-cornerstone",
-  "terapagos", "pecharunt",
-  "pikachu", "raichu", "clefable", "gengar", "alakazam", "machamp", "golem", "slowbro",
-  "starmie", "jolteon", "flareon", "vaporeon", "espeon", "umbreon", "leafeon", "glaceon", "sylveon",
-  "dragonite", "tyranitar", "blaziken", "swampert", "gardevoir", "breloom", "slaking",
-  "aggron", "flygon", "altaria", "metagross", "salamence", "latias", "latios",
-  "rhyperior", "electivire", "magmortar", "weavile", "lucario", "hippowdon", "garchomp",
-  "toxicroak", "abomasnow", "gallade", "dusknoir",
-  "zoroark-hisui", "ursaluna", "ursaluna-bloodmoon", "basculegion",
-  "kleavor", "lilligant-hisui", "voltorb-hisui", "electrode-hisui", "typhlosion-hisui",
-  "mimikyu", "marowak-alola", "raichu-alola", "ninetales-alola", "sandslash-alola",
-  "wishiwashi", "dewpider", "araquanid", "lurantis", "morelull", "shiinotic",
-  "oranguru", "passimian", "wimpod", "golisopod", "sandygast", "palossand",
-  "pyukumuku", "type-null", "silvally", "minior", "komala", "turtonator",
-  "togedemaru", "mimikyu", "bruxish", "drampa", "dhelmise", "jangmo-o",
-  "hakamo-o", "kommo-o", "tapu-koko", "tapu-lele", "tapu-bulu", "tapu-fini",
-  "buzzwole", "pheromosa", "xurkitree", "celesteela", "kartana", "guzzlord",
-  "poipole", "naganadel", "stakataka", "blacephalon", "zeraora",
-  "zygarde", "hoopa", "volcanion", "diancie", "hoopa",
-  "coalossal", "appletun", "flapple", "sandaconda", "cramorant", "barraskewda",
-  "toxtricity", "centiskorch", "clobbopus", "grapploct", "hatterene", "grimmsnarl",
-  "obstagoon", "perrserker", "cursola", "sirfetchd", "mr-rime", "runerigus",
-  "milcery", "alcremie", "falinks", "pincurchin", "snom", "frosmoth",
-  "stonjourner", "eiscue", "indeedee", "morpeko", "cufant", "copperajah",
-  "dracozolt", "arctozolt", "dracovish", "arctovish", "duraludon", "dreepy",
-  "drakloak", "dragapult",
-];
-
 router.get("/pokemon/search", async (req, res) => {
   const q = (req.query["q"] as string ?? "").toLowerCase().trim();
   const regulation = req.query["regulation"] as string | undefined;
@@ -110,7 +65,12 @@ router.get("/pokemon/search", async (req, res) => {
     return res.json([]);
   }
 
-  const matches = vgcPokemonList
+  // Use regulation-specific eligible list when provided, fall back to the Reg M-A list
+  const pool: string[] = regulation
+    ? (eligibleByRegulation[regulation] ?? REGULATION_MA_ELIGIBLE)
+    : REGULATION_MA_ELIGIBLE;
+
+  const matches = pool
     .filter((name) => name.includes(q))
     .slice(0, 12);
 
