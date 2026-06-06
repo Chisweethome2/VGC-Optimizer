@@ -1,22 +1,30 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: VGC Teambuilding Helper API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: pokemon
+    description: Pokemon data endpoints
+  - name: teams
+    description: Team management
+  - name: regulations
+    description: VGC regulation sets
+  - name: archetypes
+    description: Meta archetypes
+  - name: analysis
+    description: Team analysis and simulation
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +32,531 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /pokemon/search:
+    get:
+      operationId: searchPokemon
+      tags: [pokemon]
+      summary: Search Pokemon by name
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: regulation
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of matching Pokemon
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PokemonSummary"
+
+  /pokemon/{name}:
+    get:
+      operationId: getPokemon
+      tags: [pokemon]
+      summary: Get full Pokemon data
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Pokemon detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokemonDetail"
+        "404":
+          description: Not found
+
+  /regulations:
+    get:
+      operationId: listRegulations
+      tags: [regulations]
+      summary: List all VGC regulations
+      responses:
+        "200":
+          description: All regulations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Regulation"
+
+  /regulations/current:
+    get:
+      operationId: getCurrentRegulation
+      tags: [regulations]
+      summary: Get the current active VGC regulation
+      responses:
+        "200":
+          description: Current regulation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Regulation"
+
+  /archetypes:
+    get:
+      operationId: listArchetypes
+      tags: [archetypes]
+      summary: List all meta archetypes
+      responses:
+        "200":
+          description: All archetypes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Archetype"
+
+  /teams:
+    get:
+      operationId: listTeams
+      tags: [teams]
+      summary: List all saved teams
+      responses:
+        "200":
+          description: All teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+    post:
+      operationId: createTeam
+      tags: [teams]
+      summary: Create a new team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInput"
+      responses:
+        "201":
+          description: Created team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+
+  /teams/{id}:
+    get:
+      operationId: getTeam
+      tags: [teams]
+      summary: Get a team by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "404":
+          description: Not found
+    put:
+      operationId: updateTeam
+      tags: [teams]
+      summary: Update a team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInput"
+      responses:
+        "200":
+          description: Updated team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+    delete:
+      operationId: deleteTeam
+      tags: [teams]
+      summary: Delete a team
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /teams/{id}/analyze:
+    post:
+      operationId: analyzeTeam
+      tags: [analysis]
+      summary: Analyze a team's coverage, weaknesses, and speed tiers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Analysis results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamAnalysis"
+
+  /teams/{id}/simulate:
+    post:
+      operationId: simulateTeam
+      tags: [analysis]
+      summary: Simulate team against all meta archetypes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Simulation results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchupResult"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    PokemonSummary:
+      type: object
+      required: [name, dexNumber, types, spriteUrl]
+      properties:
+        name:
+          type: string
+        dexNumber:
+          type: integer
+        types:
+          type: array
+          items:
+            type: string
+        spriteUrl:
+          type: string
+        isLegendary:
+          type: boolean
+
+    PokemonDetail:
+      type: object
+      required: [name, dexNumber, types, baseStats, abilities, spriteUrl, artworkUrl]
+      properties:
+        name:
+          type: string
+        dexNumber:
+          type: integer
+        types:
+          type: array
+          items:
+            type: string
+        baseStats:
+          $ref: "#/components/schemas/BaseStats"
+        abilities:
+          type: array
+          items:
+            type: string
+        spriteUrl:
+          type: string
+        artworkUrl:
+          type: string
+        learnableMoves:
+          type: array
+          items:
+            type: string
+        weightKg:
+          type: number
+
+    BaseStats:
+      type: object
+      required: [hp, attack, defense, specialAttack, specialDefense, speed]
+      properties:
+        hp:
+          type: integer
+        attack:
+          type: integer
+        defense:
+          type: integer
+        specialAttack:
+          type: integer
+        specialDefense:
+          type: integer
+        speed:
+          type: integer
+
+    Regulation:
+      type: object
+      required: [id, name, label, description, isActive, startDate]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        startDate:
+          type: string
+        endDate:
+          type: ["string", "null"]
+        allowedSeriesName:
+          type: string
+        restrictedLegendariesAllowed:
+          type: integer
+        notes:
+          type: string
+
+    Archetype:
+      type: object
+      required: [id, name, description, category, coreStrategy, keyPokemon, strengths, weaknesses]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        coreStrategy:
+          type: string
+        keyPokemon:
+          type: array
+          items:
+            type: string
+        strengths:
+          type: array
+          items:
+            type: string
+        weaknesses:
+          type: array
+          items:
+            type: string
+        counterplay:
+          type: string
+        dangerLevel:
+          type: integer
+
+    TeamSlot:
+      type: object
+      required: [slot, pokemonName, moves, ability, item, nature, teraType]
+      properties:
+        slot:
+          type: integer
+        pokemonName:
+          type: string
+        moves:
+          type: array
+          items:
+            type: string
+          maxItems: 4
+        ability:
+          type: string
+        item:
+          type: string
+        nature:
+          type: string
+        teraType:
+          type: string
+        evs:
+          $ref: "#/components/schemas/StatSpread"
+        ivs:
+          $ref: "#/components/schemas/StatSpread"
+
+    StatSpread:
+      type: object
+      properties:
+        hp:
+          type: integer
+        attack:
+          type: integer
+        defense:
+          type: integer
+        specialAttack:
+          type: integer
+        specialDefense:
+          type: integer
+        speed:
+          type: integer
+
+    Team:
+      type: object
+      required: [id, name, regulation, slots, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        regulation:
+          type: string
+        description:
+          type: ["string", "null"]
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamSlot"
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    TeamInput:
+      type: object
+      required: [name, regulation, slots]
+      properties:
+        name:
+          type: string
+        regulation:
+          type: string
+        description:
+          type: string
+        slots:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamSlot"
+
+    TeamAnalysis:
+      type: object
+      required: [teamId, typeDefenses, offensiveCoverage, speedTiers, weaknessSummary, suggestions]
+      properties:
+        teamId:
+          type: integer
+        typeDefenses:
+          type: array
+          items:
+            $ref: "#/components/schemas/TypeDefenseEntry"
+        offensiveCoverage:
+          type: array
+          items:
+            type: string
+        speedTiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpeedTierEntry"
+        weaknessSummary:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeaknessSummaryEntry"
+        suggestions:
+          type: array
+          items:
+            type: string
+        terrainControl:
+          type: boolean
+        weatherControl:
+          type: boolean
+        hasTrickRoom:
+          type: boolean
+        redirectSupport:
+          type: boolean
+
+    TypeDefenseEntry:
+      type: object
+      required: [type, multiplier, pokemonResisting]
+      properties:
+        type:
+          type: string
+        multiplier:
+          type: number
+        pokemonResisting:
+          type: array
+          items:
+            type: string
+
+    SpeedTierEntry:
+      type: object
+      required: [pokemonName, baseSpeed, effectiveSpeed]
+      properties:
+        pokemonName:
+          type: string
+        baseSpeed:
+          type: integer
+        effectiveSpeed:
+          type: integer
+        nature:
+          type: string
+
+    WeaknessSummaryEntry:
+      type: object
+      required: [type, count, vulnerablePokemon]
+      properties:
+        type:
+          type: string
+        count:
+          type: integer
+        vulnerablePokemon:
+          type: array
+          items:
+            type: string
+
+    MatchupResult:
+      type: object
+      required: [archetypeId, archetypeName, rating, verdict, advantages, disadvantages, keyThreats, winConditions]
+      properties:
+        archetypeId:
+          type: string
+        archetypeName:
+          type: string
+        rating:
+          type: integer
+        verdict:
+          type: string
+        advantages:
+          type: array
+          items:
+            type: string
+        disadvantages:
+          type: array
+          items:
+            type: string
+        keyThreats:
+          type: array
+          items:
+            type: string
+        winConditions:
+          type: array
+          items:
+            type: string
