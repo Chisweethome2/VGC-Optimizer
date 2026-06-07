@@ -13,7 +13,7 @@ const SPREAD_DAMAGE_MULT = 0.75;
 
 // ── Stat helpers ──────────────────────────────────────────────────────────
 
-function effectiveStat(mon: BattlePokemon, stat: Stat): number {
+function effectiveStat(mon: BattlePokemon, stat: Stat, state?: BattleState): number {
   const base = stat === "hp" ? mon.stats.hp : mon.stats[stat];
   const stage = mon.statStages[stat] ?? 0;
   let val = applyStatStage(base, stage);
@@ -21,6 +21,11 @@ function effectiveStat(mon: BattlePokemon, stat: Stat): number {
   if (stat === "speed" && mon.status === "paralysis") val = Math.floor(val * 0.5);
   // Burn halves physical attack
   if (stat === "attack" && mon.status === "burn") val = Math.floor(val * 0.5);
+  // Tailwind doubles speed
+  if (stat === "speed" && state) {
+    const side = state.player.team.includes(mon) ? state.tailwind.player : state.tailwind.opponent;
+    if (side) val = Math.floor(val * 2);
+  }
   return val;
 }
 
@@ -31,6 +36,7 @@ function calcDamage(
   defender: BattlePokemon,
   move: BattleMove,
   spread: boolean,
+  state: BattleState,
 ): { damage: number; effectiveness: number; crit: boolean } {
   if (!move.power) return { damage: 0, effectiveness: 0, crit: false };
 
@@ -38,22 +44,18 @@ function calcDamage(
   const atkStat: Stat = isPhysical ? "attack" : "specialAttack";
   const defStat: Stat = isPhysical ? "defense" : "specialDefense";
 
-  const A = effectiveStat(attacker, atkStat);
-  const D = effectiveStat(defender, defStat);
+  const A = effectiveStat(attacker, atkStat, state);
+  const D = effectiveStat(defender, defStat, state);
+  const defRaw = Math.max(1, D);
   let power = move.power;
 
   if (spread) power = Math.floor(power * SPREAD_DAMAGE_MULT);
 
-  // Technician ability: boost moves with power <= 60
   if (attacker.ability === "Technician" && power <= 60) power = Math.floor(power * 1.5);
 
-  // Guts: boost attack when statused
   if (isPhysical && attacker.ability === "Guts" && attacker.status !== "none")
     power = Math.floor(power * 1.5);
 
-  // Intrepid Sword: +1 attack on entry (handled elsewhere, but applies here via stages)
-
-  // Life Orb: 1.3x damage multiplier
   if (attacker.item && ["life-orb", "Life Orb"].includes(attacker.item)) power = Math.floor(power * 1.3);
 
   const effectiveness = getTypeEffectiveness(move.type, defender.types);
@@ -66,12 +68,22 @@ function calcDamage(
   const random = rand(85, 100) / 100;
   const stab = attacker.types.includes(move.type) ? 1.5 : 1;
 
-  // Weather boosts
+  // Weather damage boosts
   let weatherMult = 1;
-  // (weather check handled in applyDamage)
+  if (state.weather === "sun" && move.type === "fire") weatherMult = 1.5;
+  if (state.weather === "rain" && move.type === "water") weatherMult = 1.5;
+  if (state.weather === "sun" && move.type === "water") weatherMult = 0.5;
+  if (state.weather === "rain" && move.type === "fire") weatherMult = 0.5;
 
-  const base = (((2 * LEVEL / 5 + 2) * power * A / D) / 50 + 2);
-  const damage = Math.floor(base * critMult * random * stab * effectiveness);
+  // Terrain boosts
+  let terrainMult = 1;
+  if (state.terrain === "grassy" && move.type === "grass") terrainMult = 1.3;
+  if (state.terrain === "psychic" && move.type === "psychic") terrainMult = 1.3;
+  if (state.terrain === "electric" && move.type === "electric") terrainMult = 1.3;
+  if (state.terrain === "misty" && move.type === "dragon") terrainMult = 0.5;
+
+  const base = (((2 * LEVEL / 5 + 2) * power * (A / defRaw)) / 50 + 2);
+  const damage = Math.floor(base * critMult * random * stab * effectiveness * weatherMult * terrainMult);
 
   return { damage: Math.max(1, damage), effectiveness, crit };
 }
@@ -316,7 +328,16 @@ export function executeTurn(
     const choice = playerChoices[s];
     if (choice.type === "switch") continue;
 
-    const moveIdx = choice.moveIndex ?? 0;
+    let moveIdx = choice.moveIndex ?? 0;
+    // Choice lock enforcement
+    if (mon.lockedMove >= 0) {
+      const lockedMv = mon.moves[mon.lockedMove];
+      if (lockedMv && (lockedMv.pp ?? 0) > 0) {
+        moveIdx = mon.lockedMove;
+      } else {
+        mon.lockedMove = -1;
+      }
+    }
     const move = mon.moves[moveIdx];
     if (!move || (move.pp ?? 0) <= 0) continue;
 
@@ -351,16 +372,18 @@ export function executeTurn(
       continue;
     }
 
-    // Choice lock
-    if (mon.lockedMove >= 0 && moveIdx !== mon.lockedMove) {
-      moveIdx !== mon.lockedMove; // force the locked move
-      const locked = mon.moves[mon.lockedMove];
-      if (!locked || (locked.pp ?? 0) <= 0) {
+    // Choice lock enforcement
+    let actualMoveIdx = moveIdx;
+    if (mon.lockedMove >= 0) {
+      const lockedMv = mon.moves[mon.lockedMove];
+      if (lockedMv && (lockedMv.pp ?? 0) > 0) {
+        actualMoveIdx = mon.lockedMove;
+      } else {
         mon.lockedMove = -1;
       }
     }
 
-    const spd = effectiveStat(mon, "speed");
+    const spd = effectiveStat(mon, "speed", ns);
     actions.push({
       actor: "player", slot: s, type: "move",
       moveIndex: choice.moveIndex, moveTarget: choice.moveTarget,
@@ -376,7 +399,15 @@ export function executeTurn(
     const choice = opponentChoices[s];
     if (choice.type === "switch") continue;
 
-    const moveIdx = choice.moveIndex ?? 0;
+    let moveIdx = choice.moveIndex ?? 0;
+    if (mon.lockedMove >= 0) {
+      const lockedMv = mon.moves[mon.lockedMove];
+      if (lockedMv && (lockedMv.pp ?? 0) > 0) {
+        moveIdx = mon.lockedMove;
+      } else {
+        mon.lockedMove = -1;
+      }
+    }
     const move = mon.moves[moveIdx];
     if (!move || (move.pp ?? 0) <= 0) continue;
 
@@ -390,7 +421,7 @@ export function executeTurn(
       continue;
     }
     if (mon.status === "freeze") {
-      if (move.type === "fire") {
+      if (move.type === "fire" || move.name === "scald" || move.name === "flame-wheel" || move.name === "flare-blitz") {
         mon.status = "none";
         ns.log.push(makeLog(ns.turn, "status", "opponent", mon.name, `${mon.name} thawed out!`));
       } else if (rand(1, 5) === 1) {
@@ -406,7 +437,7 @@ export function executeTurn(
       continue;
     }
 
-    const spd = effectiveStat(mon, "speed");
+    const spd = effectiveStat(mon, "speed", ns);
     actions.push({
       actor: "opponent", slot: s, type: "move",
       moveIndex: choice.moveIndex, moveTarget: choice.moveTarget,
@@ -417,20 +448,6 @@ export function executeTurn(
   // Sort: if Trick Room is active, slower goes first; otherwise faster goes first
   actions.sort((a, b) => {
     if (b.priority !== a.priority) return b.priority - a.priority;
-    if (ns.trickRoom) return a.speed - b.speed;
-    return b.speed - a.speed;
-  });
-
-  // Tailwind speed consideration: base speed of the mon is doubled, already reflected in effectiveStat.
-  // But for turn order, the raw speed matters. Let's use effective speed for order.
-  // Actually in real mechanics, tailwind doubles the speed stat. We need to handle this.
-  // Let's recompute:
-
-  // Re-sort with tailwind considerations
-  actions.sort((a, b) => {
-    if (b.priority !== a.priority) return b.priority - a.priority;
-    const aSpeed = ns.trickRoom ? 1 : 1; // We'll use the already computed speed
-    const bSpeed = 1;
     if (ns.trickRoom) return a.speed - b.speed;
     return b.speed - a.speed;
   });
@@ -640,7 +657,7 @@ function applyDamageToTarget(
     }
   }
 
-  const { damage, effectiveness, crit } = calcDamage(attacker, defender, move, spread);
+  const { damage, effectiveness, crit } = calcDamage(attacker, defender, move, spread, state);
 
   if (effectiveness === 0) {
     state.log.push(makeLog(state.turn, "immune", action.actor, attacker.name, `${attacker.name} used ${move.displayName}! It doesn't affect ${defender.name}...`));

@@ -212,7 +212,7 @@ function simulateMatchup(slots: TeamSlot[], archetype: typeof archetypes[0]) {
   };
 }
 
-router.post("/teams/:id/analyze", async (req, res) => {
+router.post("/teams/:id/analyze", requireAuth, async (req, res) => {
   try {
     const id = parseInt(String(req.params.id ?? ""));
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
@@ -306,7 +306,7 @@ router.post("/teams/:id/analyze", async (req, res) => {
   }
 });
 
-router.post("/teams/:id/simulate", async (req, res) => {
+router.post("/teams/:id/simulate", requireAuth, async (req, res) => {
   try {
     const id = parseInt(String(req.params.id ?? ""));
     if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }

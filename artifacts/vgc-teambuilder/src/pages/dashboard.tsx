@@ -21,6 +21,25 @@ export default function Dashboard() {
         <span>This is an <strong>unofficial</strong> community VGC service. Not affiliated with or endorsed by The Pokemon Company, Nintendo, or Game Freak.</span>
       </div>
 
+      <Card className="border-border bg-card/30 backdrop-blur">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-lg font-bold mb-2">What is Pokemon VGC?</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                The <strong>Video Game Championships (VGC)</strong> is the official competitive format for Pokemon video games, run by The Pokemon Company. Players build teams of 4-6 Pokemon and battle in <strong>doubles</strong> format (2 vs 2) with complex rules around items, abilities, stats, and positioning. Every season has a rotating regulation set that determines which Pokemon are legal, creating a constantly evolving metagame where strategy and preparation determine the champion.
+              </p>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold mb-2">What This Tool Does</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                VGC Optimizer helps you <strong>build, analyze, and refine</strong> competitive teams. Use the <strong>Team Builder</strong> to assemble Pokemon with moves, items, and EV spreads. Run <strong>Team Analysis</strong> to identify type weaknesses and coverage gaps. Simulate your team against <strong>meta archetypes</strong> to see how you match up. Browse <strong>real tournament data</strong> in Meta Intel, study the <strong>Hall of Legends</strong> to learn from past champions, and explore <strong>Archetypes</strong> to understand the strategies that define each format.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight flex items-center gap-3">
