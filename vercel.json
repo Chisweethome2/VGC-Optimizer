@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd artifacts/vgc-teambuilder && pnpm run build",
+  "outputDirectory": "artifacts/vgc-teambuilder/dist/public",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
