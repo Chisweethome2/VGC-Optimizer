@@ -1,13 +1,27 @@
 import { Router } from "express";
 import { db, teamsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
+import { requireAuth } from "./auth";
 import { logger } from "../lib/logger";
 
 const router = Router();
 
-router.get("/teams", async (req, res) => {
+function userId(req: any): number | null {
+  return req.user?.id ?? null;
+}
+
+router.get("/teams", requireAuth, async (req, res) => {
   try {
-    const teams = await db.select().from(teamsTable).orderBy(teamsTable.updatedAt);
+    const uid = userId(req);
+    if (uid == null) {
+      res.status(401).json({ error: "Not authenticated" });
+      return;
+    }
+    const teams = await db
+      .select()
+      .from(teamsTable)
+      .where(eq(teamsTable.userId, uid))
+      .orderBy(teamsTable.updatedAt);
     res.json(
       teams.map((t) => ({
         ...t,
@@ -21,15 +35,17 @@ router.get("/teams", async (req, res) => {
   }
 });
 
-router.post("/teams", async (req, res) => {
+router.post("/teams", requireAuth, async (req, res) => {
   try {
     const { name, regulation, description, slots } = req.body;
     if (!name || !regulation || !Array.isArray(slots)) {
-      return res.status(400).json({ error: "name, regulation, and slots are required" });
+      res.status(400).json({ error: "name, regulation, and slots are required" });
+      return;
     }
+    const uid = userId(req);
     const [team] = await db
       .insert(teamsTable)
-      .values({ name, regulation, description: description ?? null, slots })
+      .values({ name, regulation, description: description ?? null, slots, userId: uid })
       .returning();
     res.status(201).json({
       ...team,
@@ -42,12 +58,14 @@ router.post("/teams", async (req, res) => {
   }
 });
 
-router.get("/teams/:id", async (req, res) => {
+router.get("/teams/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] ?? "");
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
-    const [team] = await db.select().from(teamsTable).where(eq(teamsTable.id, id));
-    if (!team) return res.status(404).json({ error: "Team not found" });
+    const id = parseInt(String(req.params.id ?? ""));
+    if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+    const uid = userId(req);
+    if (uid == null) { res.status(401).json({ error: "Not authenticated" }); return; }
+    const [team] = await db.select().from(teamsTable).where(and(eq(teamsTable.id, id), eq(teamsTable.userId, uid)));
+    if (!team) { res.status(404).json({ error: "Team not found" }); return; }
     res.json({
       ...team,
       createdAt: team.createdAt.toISOString(),
@@ -59,20 +77,23 @@ router.get("/teams/:id", async (req, res) => {
   }
 });
 
-router.put("/teams/:id", async (req, res) => {
+router.put("/teams/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] ?? "");
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+    const id = parseInt(String(req.params.id ?? ""));
+    if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+    const uid = userId(req);
+    if (uid == null) { res.status(401).json({ error: "Not authenticated" }); return; }
     const { name, regulation, description, slots } = req.body;
     if (!name || !regulation || !Array.isArray(slots)) {
-      return res.status(400).json({ error: "name, regulation, and slots are required" });
+      res.status(400).json({ error: "name, regulation, and slots are required" });
+      return;
     }
     const [team] = await db
       .update(teamsTable)
       .set({ name, regulation, description: description ?? null, slots, updatedAt: new Date() })
-      .where(eq(teamsTable.id, id))
+      .where(and(eq(teamsTable.id, id), eq(teamsTable.userId, uid)))
       .returning();
-    if (!team) return res.status(404).json({ error: "Team not found" });
+    if (!team) { res.status(404).json({ error: "Team not found" }); return; }
     res.json({
       ...team,
       createdAt: team.createdAt.toISOString(),
@@ -84,11 +105,13 @@ router.put("/teams/:id", async (req, res) => {
   }
 });
 
-router.delete("/teams/:id", async (req, res) => {
+router.delete("/teams/:id", requireAuth, async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] ?? "");
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
-    await db.delete(teamsTable).where(eq(teamsTable.id, id));
+    const id = parseInt(String(req.params.id ?? ""));
+    if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
+    const uid = userId(req);
+    if (uid == null) { res.status(401).json({ error: "Not authenticated" }); return; }
+    await db.delete(teamsTable).where(and(eq(teamsTable.id, id), eq(teamsTable.userId, uid)));
     res.status(204).send();
   } catch (err) {
     req.log.error({ err }, "Failed to delete team");

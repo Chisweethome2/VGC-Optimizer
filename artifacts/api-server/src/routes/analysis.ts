@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { db, teamsTable } from "@workspace/db";
-import { eq } from "drizzle-orm";
+import { db, teamsTable, pokemonTable } from "@workspace/db";
+import { eq, inArray } from "drizzle-orm";
+import { requireAuth } from "./auth";
 import { archetypes } from "./archetypes";
 
 const router = Router();
@@ -99,7 +100,7 @@ const BASE_SPEEDS: Record<string, number> = {
   // aerodactyl mega / gyarados mega
   "aerodactyl": 130, "gyarados": 81,
   // corviknight, sneasler, basculegion already added
-  "corviknight": 60, "talonflame": 126, "aegislash": 60, "maushold": 50,
+  "corviknight": 60, "aegislash": 60, "maushold": 50,
 };
 
 function getBaseSpeed(name: string): number {
@@ -213,25 +214,30 @@ function simulateMatchup(slots: TeamSlot[], archetype: typeof archetypes[0]) {
 
 router.post("/teams/:id/analyze", async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] ?? "");
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+    const id = parseInt(String(req.params.id ?? ""));
+    if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
     const [team] = await db.select().from(teamsTable).where(eq(teamsTable.id, id));
-    if (!team) return res.status(404).json({ error: "Team not found" });
+    if (!team) { res.status(404).json({ error: "Team not found" }); return; }
 
     const slots = (team.slots ?? []) as TeamSlot[];
 
-    // Build type defense analysis from Tera types as rough proxy
+    // Fetch actual Pokemon types from DB
+    const names = slots.map((s) => s.pokemonName.toLowerCase());
+    const pokes = await db.select({ name: pokemonTable.name, types: pokemonTable.types })
+      .from(pokemonTable)
+      .where(inArray(pokemonTable.name, names));
+    const typeMap = new Map<string, string[]>();
+    for (const p of pokes) typeMap.set(p.name, p.types as string[]);
+
+    function getTypes(s: TeamSlot): string[] {
+      return typeMap.get(s.pokemonName.toLowerCase()) ?? [];
+    }
+
+    // Build type defense analysis from actual Pokemon types
     const typeDefenses = ALL_TYPES.slice(0, 18).map((t) => {
       const resisting = slots
-        .filter((s) => {
-          const tera = s.teraType?.toLowerCase();
-          if (tera) {
-            const mult = getDefMultiplier(t, [tera]);
-            return mult < 1;
-          }
-          return false;
-        })
+        .filter((s) => getDefMultiplier(t, getTypes(s)) < 1)
         .map((s) => s.pokemonName);
       return {
         type: t,
@@ -242,7 +248,7 @@ router.post("/teams/:id/analyze", async (req, res) => {
 
     // Offensive coverage from move names (rough type detection)
     const offensiveCoverage = Array.from(
-      new Set(slots.flatMap((s) => [s.teraType?.toLowerCase()].filter(Boolean)))
+      new Set(slots.flatMap((s) => getTypes(s)))
     ).filter(Boolean) as string[];
 
     // Speed tiers
@@ -255,15 +261,11 @@ router.post("/teams/:id/analyze", async (req, res) => {
       }))
       .sort((a, b) => b.effectiveSpeed - a.effectiveSpeed);
 
-    // Weakness summary
+    // Weakness summary — how many Pokemon are weak (2x or worse) to each type
     const weaknessSummary = ALL_TYPES.slice(0, 18)
       .map((t) => {
         const vulnerable = slots
-          .filter((s) => {
-            const tera = s.teraType?.toLowerCase();
-            if (tera) return getDefMultiplier(t, [tera]) > 1;
-            return false;
-          })
+          .filter((s) => getDefMultiplier(t, getTypes(s)) > 1)
           .map((s) => s.pokemonName);
         return { type: t, count: vulnerable.length, vulnerablePokemon: vulnerable };
       })
@@ -306,11 +308,11 @@ router.post("/teams/:id/analyze", async (req, res) => {
 
 router.post("/teams/:id/simulate", async (req, res) => {
   try {
-    const id = parseInt(req.params["id"] ?? "");
-    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+    const id = parseInt(String(req.params.id ?? ""));
+    if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
     const [team] = await db.select().from(teamsTable).where(eq(teamsTable.id, id));
-    if (!team) return res.status(404).json({ error: "Team not found" });
+    if (!team) { res.status(404).json({ error: "Team not found" }); return; }
 
     const slots = (team.slots ?? []) as TeamSlot[];
     const results = archetypes.map((archetype) => simulateMatchup(slots, archetype));

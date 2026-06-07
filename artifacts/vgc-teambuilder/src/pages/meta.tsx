@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useListTournamentTeams, useGetTournamentEvent } from "@workspace/api-client-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useMemo } from "react";
+import { useListTournamentTeams, useListTournamentEvents } from "@workspace/api-client-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { TrendingUp, TrendingDown, Minus, Trophy, Users, BarChart3, Calendar } from "lucide-react";
-
-const EVENT_SLUG = "indy-regionals-2026";
 
 const PLACEMENT_FILTERS = [
   { label: "Top 8", value: "top8", max: 8 },
@@ -51,10 +51,19 @@ export default function Meta() {
   const [filter, setFilter] = useState("top8");
   const maxOrder = PLACEMENT_FILTERS.find((f) => f.value === filter)?.max ?? 8;
 
-  const { data: teams, isLoading: teamsLoading } = useListTournamentTeams({
-    event: EVENT_SLUG,
-  });
-  const { data: event, isLoading: eventLoading } = useGetTournamentEvent(EVENT_SLUG);
+  const { data: events, isLoading: eventsLoading } = useListTournamentEvents();
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+
+  const autoSlug = useMemo(() => {
+    if (selectedSlug) return selectedSlug;
+    if (events && events.length > 0) return events[0]!.slug;
+    return null;
+  }, [events, selectedSlug]);
+
+  const { data: teams, isLoading: teamsLoading } = useListTournamentTeams(
+    autoSlug ? { event: autoSlug } : { event: "" },
+  );
+  const event = useMemo(() => events?.find((e) => e.slug === autoSlug) ?? null, [events, autoSlug]);
 
   const filteredTeams = teams?.filter((t) => t.placementOrder <= maxOrder) ?? [];
 
@@ -65,14 +74,44 @@ export default function Meta() {
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-primary uppercase">Meta Intel</h1>
           <p className="text-muted-foreground mt-1 font-mono text-sm">
-            Real tournament data — Reg M-A reference teams &amp; usage stats.
+            Tournament results auto-updated from VGC events.
           </p>
         </div>
+        <div className="flex items-center gap-2">
+          {event && (
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground border border-border rounded px-3 py-2 bg-card/50">
+              <Calendar className="h-3.5 w-3.5" />
+              {event.name} · {event.location} · {event.date}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Event selector */}
+      <div className="flex items-center gap-3">
+        <Label className="text-xs font-mono text-muted-foreground uppercase tracking-widest whitespace-nowrap">
+          Event
+        </Label>
+        <Select
+          value={autoSlug ?? ""}
+          onValueChange={(v) => setSelectedSlug(v)}
+          disabled={eventsLoading || !events?.length}
+        >
+          <SelectTrigger className="w-[280px] h-8 text-xs font-mono">
+            <SelectValue placeholder={eventsLoading ? "Loading events..." : "Select event"} />
+          </SelectTrigger>
+          <SelectContent>
+            {events?.map((e) => (
+              <SelectItem key={e.slug} value={e.slug} className="text-xs font-mono">
+                {e.name} — {e.location} ({e.date})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {event && (
-          <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground border border-border rounded px-3 py-2 bg-card/50">
-            <Calendar className="h-3.5 w-3.5" />
-            {event.name} · {event.location} · {event.date}
-          </div>
+          <span className="text-[10px] font-mono text-muted-foreground/60">
+            {event.regulation}
+          </span>
         )}
       </div>
 
@@ -81,7 +120,7 @@ export default function Meta() {
         <h2 className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
           <BarChart3 className="h-3.5 w-3.5" /> Usage Statistics
         </h2>
-        {eventLoading ? (
+        {!event ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
             {Array.from({ length: 14 }).map((_, i) => (
               <Skeleton key={i} className="h-20 rounded-lg" />
@@ -89,7 +128,7 @@ export default function Meta() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-            {event?.usageStats?.map((stat) => (
+            {event.usageStats?.map((stat) => (
               <Card
                 key={stat.rank}
                 className={`border bg-card/60 backdrop-blur relative overflow-hidden
@@ -196,7 +235,7 @@ export default function Meta() {
         {filteredTeams.length === 0 && !teamsLoading && (
           <div className="text-center py-12 text-muted-foreground font-mono text-sm">
             <Users className="h-8 w-8 mx-auto mb-3 opacity-30" />
-            No teams found.
+            No teams found for this event.
           </div>
         )}
       </div>

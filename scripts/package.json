@@ -6,6 +6,8 @@
   "scripts": {
     "hello": "tsx ./src/hello.ts",
     "seed-game-data": "tsx ./src/seed-game-data.ts",
+    "seed-pokemon": "tsx ./src/seed-pokemon.ts",
+    "seed-all-moves": "tsx ./src/seed-all-moves.ts",
     "seed-indy-regionals": "tsx ./src/seed-indy-regionals.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

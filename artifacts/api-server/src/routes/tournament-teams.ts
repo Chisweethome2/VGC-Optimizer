@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, tournamentEventsTable, tournamentTeamsTable } from "@workspace/db";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 
 const router = Router();
 
@@ -26,18 +26,23 @@ router.get("/tournament-events", async (_req, res) => {
   const events = await db
     .select()
     .from(tournamentEventsTable)
-    .orderBy(asc(tournamentEventsTable.date));
+    .orderBy(desc(tournamentEventsTable.date));
   res.json(events);
 });
 
 router.get("/tournament-events/:slug", async (req, res) => {
-  const { slug } = req.params;
-  const [event] = await db
-    .select()
-    .from(tournamentEventsTable)
-    .where(eq(tournamentEventsTable.slug, slug));
-  if (!event) return res.status(404).json({ error: "Event not found" });
-  res.json(event);
+  try {
+    const slug = String(req.params.slug);
+    const [event] = await db
+      .select()
+      .from(tournamentEventsTable)
+      .where(eq(tournamentEventsTable.slug, slug));
+    if (!event) { res.status(404).json({ error: "Event not found" }); return; }
+    res.json(event);
+  } catch (err) {
+    console.error("Tournament event error:", err);
+    res.status(500).json({ error: "Failed" });
+  }
 });
 
 export default router;
