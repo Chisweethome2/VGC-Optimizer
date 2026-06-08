@@ -367,5 +367,20 @@ export async function customFetch<T = unknown>(
     throw new ApiError(response, errorData, requestInfo);
   }
 
+  const mediaType = (response.headers.has("content-type")
+    ? response.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase()
+    : null) ?? null;
+  if (mediaType === "text/html" && (responseType === "json" || responseType === "auto")) {
+    throw new ApiError(
+      new Response(response.body, {
+        status: 503,
+        statusText: "Service Unavailable",
+        headers: response.headers,
+      }),
+      null,
+      requestInfo,
+    );
+  }
+
   return (await parseSuccessBody(response, responseType, requestInfo)) as T;
 }
