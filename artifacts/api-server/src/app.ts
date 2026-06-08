@@ -2,9 +2,14 @@ import express, { type Express } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
+import path from "path";
+import { fileURLToPath } from "url";
 import router from "./routes";
 import { authMiddleware } from "./routes/auth";
 import { logger } from "./lib/logger";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.resolve(__dirname, "..", "public");
 
 const app: Express = express();
 
@@ -41,5 +46,11 @@ app.use(cookieParser());
 app.use(authMiddleware);
 
 app.use("/api", router);
+
+// Serve static frontend
+app.use(express.static(publicDir));
+app.get("/{*splat}", (_req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
 
 export default app;
