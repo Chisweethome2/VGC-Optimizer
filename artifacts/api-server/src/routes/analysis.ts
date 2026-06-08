@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, teamsTable, pokemonTable } from "@workspace/db";
+import { db, teamsTable, pokemonTable } from "../lib/db";
 import { eq, inArray } from "drizzle-orm";
 import { requireAuth } from "./auth";
 import { archetypes } from "./archetypes";

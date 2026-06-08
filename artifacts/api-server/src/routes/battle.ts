@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, teamsTable, movesTable, pokemonTable } from "@workspace/db";
+import { db, teamsTable, movesTable, pokemonTable } from "../lib/db";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "./auth";
 import { initBattle, executeTurn, getAIMoves } from "../lib/battle/engine";

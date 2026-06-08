@@ -1,6 +1,6 @@
 import { Router } from "express";
 import crypto from "crypto";
-import { db, usersTable, sessionsTable } from "@workspace/db";
+import { db, usersTable, sessionsTable } from "../lib/db";
 import { eq } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 

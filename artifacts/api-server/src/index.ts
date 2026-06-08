@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { initBattle, executeTurn } from "./lib/battle/engine";
 import { getSession } from "./routes/auth";
-import { db, teamsTable, movesTable, pokemonTable } from "@workspace/db";
+import { db, teamsTable, movesTable, pokemonTable } from "./lib/db";
 import { eq } from "drizzle-orm";
 import type { BattlePokemon, Stat, BattleMove, PlayerChoice } from "./lib/battle/types";
 import { natureMultiplier, calcStat, calcHp } from "./lib/battle/types";

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, naturesTable, itemsTable, movesTable } from "@workspace/db";
+import { db, naturesTable, itemsTable, movesTable } from "../lib/db";
 import { eq, ilike, and, or } from "drizzle-orm";
 
 const router = Router();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, pokemonTable } from "@workspace/db";
+import { db, pokemonTable } from "../lib/db";
 import { ilike, inArray } from "drizzle-orm";
 import { eligibleByRegulation, REGULATION_MA_ELIGIBLE } from "./regulations";
 
