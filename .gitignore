@@ -52,3 +52,4 @@ Thumbs.db
 .env
 .vercel
 vgc-local.db*
+artifacts/api-server/public
