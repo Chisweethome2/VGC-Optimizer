@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { useListArchetypes } from "@workspace/api-client-react";
+import { ARCHETYPES } from "@/data/archetypes";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { BookOpen, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
 export default function Archetypes() {
-  const { data: archetypes, isLoading } = useListArchetypes();
+  const archetypes = ARCHETYPES;
   const [filter, setFilter] = useState("");
 
   const filteredArchetypes = archetypes?.filter(a => 
@@ -32,13 +31,8 @@ export default function Archetypes() {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-64 rounded-xl" />)}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredArchetypes?.map(arch => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {filteredArchetypes?.map(arch => (
             <Card key={arch.id} className="border-border bg-card/50 backdrop-blur overflow-hidden flex flex-col">
               <div className="h-2 w-full bg-gradient-to-r from-primary to-transparent" />
               <CardHeader>
@@ -113,7 +107,6 @@ export default function Archetypes() {
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }

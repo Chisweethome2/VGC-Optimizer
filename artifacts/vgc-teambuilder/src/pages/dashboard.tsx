@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
-  useGetCurrentRegulation,
   useListTeams,
 } from "@workspace/api-client-react";
+import { getCurrentRegulation } from "@/data/regulations";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Sparkles, Zap, Activity, Info } from "lucide-react";
 
 export default function Dashboard() {
-  const { data: reg, isLoading: regLoading } = useGetCurrentRegulation();
+  const reg = useMemo(() => getCurrentRegulation(), []);
+  const regLoading = false;
   const { data: teams, isLoading: teamsLoading } = useListTeams();
 
   const safeTeams = Array.isArray(teams) ? teams : [];

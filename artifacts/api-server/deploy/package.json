@@ -1,0 +1,16 @@
+{
+  "name": "vgc-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --enable-source-maps ./dist/index.mjs",
+    "db:push": "drizzle-kit push --config ./drizzle.config.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.42.0",
+    "drizzle-kit": "^0.31.10",
+    "pg": "^8.20.0",
+    "@types/pg": "^8.20.0"
+  }
+}
