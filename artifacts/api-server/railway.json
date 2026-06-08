@@ -1,0 +1,6 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "cp deploy-package.json package.json && npm install"
+  }
+}

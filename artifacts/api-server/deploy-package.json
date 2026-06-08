@@ -1,0 +1,16 @@
+{
+  "name": "vgc-live",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "postinstall": "node seed.mjs",
+    "start": "node --enable-source-maps ./dist/index.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.10.0"
+  }
+}

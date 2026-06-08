@@ -1,0 +1,5 @@
+[phases.setup]
+nixPkgs = ["nodejs_24", "python3", "gcc"]
+
+[start]
+cmd = "node --enable-source-maps ./dist/index.mjs"
