@@ -5,6 +5,32 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth";
 import { Layout } from "@/components/layout";
 import NotFound from "@/pages/not-found";
+import React from "react";
+
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  state = { hasError: false, error: null as Error | null };
+  static getDerivedStateFromError(e: Error) {
+    return { hasError: true, error: e };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ color: "white", padding: "3rem", fontFamily: "sans-serif", minHeight: "100vh", background: "#111" }}>
+          <h1 style={{ color: "#ef4444" }}>Something went wrong</h1>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: "14px", marginTop: "1rem", color: "#aaa" }}>
+            {this.state.error?.message}
+            {"\n\n"}
+            {this.state.error?.stack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 import Dashboard from "@/pages/dashboard";
 import Builder from "@/pages/builder";
@@ -48,7 +74,9 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <WouterRouter base={import.meta.env.BASE_URL?.replace(/\/$/, "") || ""}>
-            <Router />
+            <ErrorBoundary>
+              <Router />
+            </ErrorBoundary>
           </WouterRouter>
         </AuthProvider>
         <Toaster />

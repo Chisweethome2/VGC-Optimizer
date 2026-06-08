@@ -14,6 +14,8 @@ export default function Dashboard() {
   const { data: reg, isLoading: regLoading } = useGetCurrentRegulation();
   const { data: teams, isLoading: teamsLoading } = useListTeams();
 
+  const safeTeams = Array.isArray(teams) ? teams : [];
+
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-2 flex items-center gap-2 text-sm text-yellow-300/80">
@@ -143,9 +145,9 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3].map(i => <Skeleton key={i} className="h-32 rounded-xl" />)}
           </div>
-        ) : teams && teams.length > 0 ? (
+        ) : safeTeams.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {teams.map((team) => (
+            {safeTeams.map((team) => (
               <Card key={team.id} className="hover:border-primary/50 transition-all hover:shadow-[0_0_20px_rgba(239,68,68,0.1)] bg-card/50 cursor-pointer group">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center justify-between">
@@ -156,7 +158,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {team.slots.map((slot) => (
+                    {(Array.isArray(team.slots) ? team.slots : []).map((slot) => (
                       <Badge key={slot.slot} variant="secondary" className="text-xs">
                         {slot.pokemonName || "\u2500\u2500\u2500"}
                       </Badge>
